@@ -134,19 +134,23 @@ router.patch('/api/answer/:questionId/:answerId', (req, res) => {
 router.delete('/api/:questionId/answer/:answerId', (req, res) => {
 const questionId = req.params.questionId;
 const answerId  = req.params.answerId;
-console.log(typeof(req.params.questionId));
-console.log("----------------------------------------:", questionId,":::::", answerId)
-Question.findById(req.params.questionId, (error, question) => {
-    if(!error){
-        console.log(question)
-
-    } else {
-        console.log(error)
-    } 
+// console.log(typeof(req.params.questionId));
+// console.log("-----------:", req.params.questionId == "5df7f25801b13613a561da60")
+// console.log("jhghghghghg",Question.findById(req.params.questionId));
+Question.findById(questionId)
+.then(q=>{
+// console.log("say it loud",q.answers)
+const x = q.answers.filter(answer=>answer._id==answerId)
+q.answers.splice(x,1)
+// console.log("after the shield", q.answers)
+q.save()
 })
+.then(()=>{
+    res.status(204).end()
+})
+.catch(error=>console.log(error))
 
 })
-
 
 //Export th router so we can use it in the server.js file
 module.exports = router; 
