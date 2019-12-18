@@ -15,9 +15,10 @@ router.use(express.json())
 */
 router.get('/api/assessments', (req, res) =>{
     Assessment.find({})
+    .populate("questions")
     //return all articles as an Array
-    .then((assessment) =>{
-        res.status(200).json({assessment: assessment});
+    .then((assessments) =>{
+        res.status(200).json({assessments: assessments});
         
     })
     //Catch any error that might occur
