@@ -38,30 +38,44 @@ router.post('/api/:questionId/answers', (req, res) => {
     // console.log("im here")
     // questionID :      5df7f25801b13613a561da60
 	const questiontId = req.params.questionId;
-	const newAnswer = new Answer({ content: req.body.content });
-	console.log(newAnswer);
-	newAnswer.save((error, newAnswer) => {
-		if (!error) {
-			Question.findById(questiontId, (error, foundQuestion) => {
-				if (!error) {
-					console.log("question.answerzzzz", foundQuestion.answers)
-					foundQuestion.answers.push(newAnswer);
-					// Question.findOne({answers}).populate('answers')
-				    foundQuestion.save((error, updateQuestion) => {
-						if (!error) {
-							res.status(201).json(updateQuestion);
-						} else {
-							res.status(500).json(error);
-						}
-					})
+	
+	Question.findById(questiontId, (error, question) => {
+		if(!error){
+			question.answers.push(req.body.answer);
+			console.log(question.answers)
+			question.save((error, updatedQuestion) =>{
+				if(!error){
+					res.status(204).end();
 				} else {
-					res.status(500).json({ error: error })
+					res.status(500).json(error);
 				}
-			})
+			});
 		} else {
-			res.status(500).json({ error: error });
+			res.status(500).json(error);
 		}
-	})
+
+	});
+	// newAnswer.save((error, newAnswer) => {
+	// 	if (!error) {
+	// 		Question.findById(questiontId, (error, foundQuestion) => {
+	// 			if (!error) {
+	// 				foundQuestion.answers.push(req.body.answer);
+	// 				// Question.findOne({answers}).populate('answers')
+	// 			    foundQuestion.save((error, updateQuestion) => {
+	// 					if (!error) {
+	// 						res.status(201).json(updateQuestion);
+	// 					} else {
+	// 						res.status(500).json(error);
+	// 					}
+	// 				})
+	// 			} else {
+	// 				res.status(500).json({ error: error })
+	// 			}
+	// 		})
+	// 	} else {
+	// 		res.status(500).json({ error: error });
+	// 	}
+	// })
 });
 
 
@@ -134,14 +148,17 @@ router.patch('/api/answer/:questionId/:answerId', (req, res) => {
 router.delete('/api/:questionId/answer/:answerId', (req, res) => {
 const questionId = req.params.questionId;
 const answerId  = req.params.answerId;
+console.log(questionId)
 // console.log(typeof(req.params.questionId));
 // console.log("-----------:", req.params.questionId == "5df7f25801b13613a561da60")
 // console.log("jhghghghghg",Question.findById(req.params.questionId));
 Question.findById(questionId)
 .then(q=>{
 // console.log("say it loud",q.answers)
-const x = q.answers.filter(answer=>answer._id==answerId)
-q.answers.splice(x,1)
+
+const newQ = q;
+newQ.answers.splice(q.answers.findIndex( answer => answer._id == answerId),1);
+q = newQ;
 // console.log("after the shield", q.answers)
 q.save()
 })

@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 //embeded
 const answerSchema = new Schema({
-    content: [String]
+    content: String
   })
   
 
@@ -14,6 +14,8 @@ const questionSchema = new Schema({
     //embeded with answers
     answers: [answerSchema]
     
+},{
+  usePushEach: true
 });
 
 const Question = mongoose.model('Question', questionSchema);
