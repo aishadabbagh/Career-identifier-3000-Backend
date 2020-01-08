@@ -28,7 +28,7 @@ const tokenOrBearer = require('./lib/token_or_bearer')
 
 // Define Ports
 const reactPort = 7165
-const expressPort = 3003
+const expressPort = 3004
 
 // establish database connection
   mongoose.Promise = global.Promise
